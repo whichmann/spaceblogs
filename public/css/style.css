@@ -5,3 +5,7 @@ body {
 .header__logo {
     color: red;
 }
+
+.searchBtn {
+    width: 500px;
+}
