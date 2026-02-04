@@ -6,6 +6,10 @@ body {
     color: red;
 }
 
+.container {
+    background-color: greenyellow;
+}
+
 .searchBtn {
     width: 500px;
 }
