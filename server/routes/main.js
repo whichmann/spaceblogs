@@ -28,13 +28,59 @@ router.get('', async (req, res) => {
  * POST :id
  */
 
-router.get('/post/:id', async (req, res) => {
+router.get('/post/:id', async ({ params }, res) => {
     try {
-        let slug = req.params.id;
+        let slug = params.id;
         const data = await Post.findById({ _id: slug });
-        res.render('post', { data, locals: LOCALS });
+        res.render('post', { data, locals: { ...LOCALS, title: `Spaceblogs | ${data.title}` }});
     } catch (error) {
         console.log({ error })
+    }
+})
+
+/**
+ * POST /
+ * Post - searchTerm
+ */
+
+router.post('/search', async (req, res) => {
+    try {
+        let searchTerm = req.body.searchTerm;
+        const serializedSearchTerm = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
+
+        const data = await Post.find({
+            $or: [
+                { title: { $regex: new RegExp(serializedSearchTerm, 'i')} },
+                { body: { $regex: new RegExp(serializedSearchTerm, 'i')} }
+            ]
+        })
+        console.log({searchTerm})
+        res.render('searchPage', { local: LOCALS, data })
+    } catch (error) {
+        console.log({error})
+    }
+})
+
+/**
+ * POST /
+ * Post - searchTerm
+ */
+
+router.post('/search', async (req, res) => {
+    try {
+        let searchTerm = req.body.searchTerm;
+        const serializedSearchTerm = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
+
+        const data = await Post.find({
+            $or: [
+                { title: { $regex: new RegExp(serializedSearchTerm, 'i')} },
+                { body: { $regex: new RegExp(serializedSearchTerm, 'i')} }
+            ]
+        })
+        console.log({searchTerm})
+        res.render('searchPage', { local: LOCALS, data })
+    } catch (error) {
+        console.log({error})
     }
 })
 

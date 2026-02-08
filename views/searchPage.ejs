@@ -1,0 +1,21 @@
+<div class="author">
+    <h1 class="author__heading">My spaceblog. Hi!</h1>
+    <p class="author__body">Karol Wichmann, astro-enthusiast.</p>
+</div>
+
+<img alt="a person looking at the viewer" src="/img/hero-image.webp" width="981" height="528">
+
+<section class=""articles">
+    <h2 class="articles__heading">Latest posts</h2>
+
+    <ul class="article-ul">
+        <% data.forEach(post => { %>
+            <li>
+                <a href="post/<%= post._id %>">
+                    <span><%= post.title %></span>
+                    <span class="article-list__date"><%= post.createdAt.toDateString() %></span>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+</section>
