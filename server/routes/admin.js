@@ -114,6 +114,20 @@ router.put('/edit-post/:id', authMiddleware, async (req, res) => {
 })
 
 /**
+ * DELETE /
+ * Admin - delete post
+ */
+router.delete('/delete-post/:id', authMiddleware, async (req, res) => {
+    try {
+        await Post.findByIdAndDelete(req.params.id)
+
+        res.redirect("/dashboard");
+    } catch (error) {
+        console.log({ error });
+    }
+})
+
+/**
  * POST /
  * Admin - add post
  */
