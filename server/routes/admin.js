@@ -119,7 +119,7 @@ router.put('/edit-post/:id', authMiddleware, async (req, res) => {
  */
 router.delete('/delete-post/:id', authMiddleware, async (req, res) => {
     try {
-        await Post.findByIdAndDelete(req.params.id)
+        await Post.deleteOne({ _id: req.params.id });
 
         res.redirect("/dashboard");
     } catch (error) {
