@@ -89,7 +89,7 @@ router.get('/edit-post/:id', authMiddleware, async ({ params }, res) => {
     try {
         let slug = params.id;
         const data = await Post.findById({ _id: slug });
-        res.render('admin/edit-post', { data, locals: { ...LOCALS, layout: adminLayout, title: `Spaceblogs | ${data.title}`, currentRoute: '/edit-post' } });
+        res.render('admin/edit-post', { data, locals: { ...LOCALS, layout: adminLayout, title: `Spaceblogs | ${data.title}` }, currentRoute: '/edit-post' });
     } catch (error) {
         console.log({ error })
     }
