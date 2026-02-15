@@ -5,11 +5,31 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Post = require('../models/Post');
 
 const LOCALS = { title: "Spaceblogs", body: "Admin Page" };
 
 const adminLayout = '../views/layouts/admin';
 const jwtSecret = process.env.JWT_SECRET;
+
+/**
+ * Auth Middleware
+ */
+const authMiddleware = (req, res, next) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    try {
+        const decodedToken = jwt.verify(token, jwtSecret);
+        req.userId = decodedToken.userId;
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+}
 
 /**
  * POST /
@@ -61,6 +81,50 @@ router.post('/register', async (req, res) => {
     }
 })
 
+/**
+ * POST /
+ * Admin - edit post
+ */
+router.post('/add-post', authMiddleware, async (req, res) => {
+    try {
+        const { title, body } = req.body;
+
+        try {
+            const post = await Post.create({ title, body });
+            res.status(201).json({ message: 'Post Created', post })
+        } catch (error) {
+            if (error?.code === 11000) {
+                res.status(409).json({ message: "User already in use" })
+            }
+            res.status(500).json({ message: "Internal error" })
+        }
+    } catch (error) {
+        console.log({ error });
+    }
+})
+
+/**
+ * POST /
+ * Admin - add post
+ */
+router.post('/add-post', authMiddleware, async (req, res) => {
+    try {
+        const { title, body } = req.body;
+
+        try {
+            const post = await Post.create({ title, body });
+            res.status(201).json({ message: 'Post Created', post })
+        } catch (error) {
+            if (error?.code === 11000) {
+                res.status(409).json({ message: "User already in use" })
+            }
+            res.status(500).json({ message: "Internal error" })
+        }
+    } catch (error) {
+        console.log({ error });
+    }
+})
+
 router.get('/admin', async (req, res) => {
     try {
         res.render('admin/index', { locals: LOCALS, layout: adminLayout })
@@ -69,8 +133,34 @@ router.get('/admin', async (req, res) => {
     }
 })
 
-router.get('/dashboard', async (req, res) => {
-    res.render('admin/dashboard');
+/**
+ * GET /
+ * Admin - add post page
+ */
+router.get('/add-post', async (req, res) => {
+    try {
+        res.render('admin/addPost', { locals: { ...LOCALS, title: 'Add new page' }, layout: adminLayout })
+    } catch (error) {
+        console.log({ error })
+    }
+})
+
+/**
+ * GET /
+ * Admin Dashboard
+ */
+router.get('/dashboard', authMiddleware, async (req, res) => {
+    try {
+        const data = await Post.find();
+        res.render('admin/dashboard', {
+            locals: LOCALS,
+            data
+        });
+        
+    } 
+    catch (error) {
+        console.log({ error });
+    }
 })
 
 module.exports = router; 

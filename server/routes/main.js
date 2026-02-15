@@ -6,21 +6,36 @@ const Post = require('../models/Post');
 
 const LOCALS = { title: "Spaceblogs", body: "Your blog. Constellation-driven." };
 
-// Routes
+/**
+ * GET /
+ * HOME
+*/
 router.get('', async (req, res) => {
-    const PAGINATION_SIZE = 10;
-
+  try {
+    let perPage = 10;
     let page = req.query.page || 1;
 
-    const data = await Post.aggregate([{ $sort: { createdAt: -1 } }]).skip(PAGINATION_SIZE * page).limit(PAGINATION_SIZE).exec();
-    const count = await Post.countDocuments();
+    const data = await Post.aggregate([ { $sort: { createdAt: -1 } } ])
+    .skip(perPage * page - perPage)
+    .limit(perPage)
+    .exec();
+
+    const count = await Post.countDocuments({});
     const nextPage = parseInt(page) + 1;
-    const hasNextPage = nextPage * PAGINATION_SIZE < count;
-    try {
-        res.render('index', { locals: LOCALS, data, count, nextPage: hasNextPage ? nextPage : null });
-    } catch (error) {
-        console.log({ error })
-    }
+    const hasNextPage = nextPage <= Math.ceil(count / perPage);
+
+    res.render('index', { 
+      locals: LOCALS,
+      data,
+      current: page,
+      nextPage: hasNextPage ? nextPage : null,
+      currentRoute: '/'
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+
 });
 
 /**
