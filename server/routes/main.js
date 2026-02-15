@@ -63,7 +63,7 @@ router.get('/post/:id', async ({ params }, res) => {
     try {
         let slug = params.id;
         const data = await Post.findById({ _id: slug });
-        res.render('post', { data, locals: { ...LOCALS, title: `Spaceblogs | ${data.title}` }});
+        res.render('post', { data, locals: { ...LOCALS, title: `Spaceblogs | ${data.title}` }, currentRoute: '/about'});
     } catch (error) {
         console.log({ error })
     }
@@ -86,7 +86,7 @@ router.post('/search', async (req, res) => {
             ]
         })
         console.log({searchTerm})
-        res.render('search-page', { local: LOCALS, data })
+        res.render('search-page', { local: LOCALS, data, currentRoute: '/search-page' } )
     } catch (error) {
         console.log({error})
     }

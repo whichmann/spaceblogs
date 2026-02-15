@@ -1,5 +1,5 @@
 function isActiveRoute(route, currentRoute) {
-    return route === currentRoute;
+    return currentRoute && route === currentRoute;
 }
 
 module.exports = { isActiveRoute }
