@@ -70,30 +70,7 @@ router.post('/search', async (req, res) => {
             ]
         })
         console.log({searchTerm})
-        res.render('searchPage', { local: LOCALS, data })
-    } catch (error) {
-        console.log({error})
-    }
-})
-
-/**
- * POST /
- * Post - searchTerm
- */
-
-router.post('/search', async (req, res) => {
-    try {
-        let searchTerm = req.body.searchTerm;
-        const serializedSearchTerm = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
-
-        const data = await Post.find({
-            $or: [
-                { title: { $regex: new RegExp(serializedSearchTerm, 'i')} },
-                { body: { $regex: new RegExp(serializedSearchTerm, 'i')} }
-            ]
-        })
-        console.log({searchTerm})
-        res.render('searchPage', { local: LOCALS, data })
+        res.render('search-page', { local: LOCALS, data })
     } catch (error) {
         console.log({error})
     }

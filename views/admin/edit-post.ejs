@@ -1,0 +1,5 @@
+<form action="/edit-post/<%= data._id %>?_method=PUT" method="POST">
+    <input type="text" name="title" value="<%= data.title %>">
+    <textarea name="body"><%= data.body %></textarea>
+    <input type="submit" value="Edit post" />
+</form>

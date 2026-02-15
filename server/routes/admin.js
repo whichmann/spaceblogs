@@ -43,7 +43,7 @@ router.post('/admin', async (req, res) => {
         if (!user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        
+
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
@@ -85,19 +85,29 @@ router.post('/register', async (req, res) => {
  * POST /
  * Admin - edit post
  */
-router.post('/add-post', authMiddleware, async (req, res) => {
+router.get('/edit-post/:id', authMiddleware, async ({ params }, res) => {
     try {
-        const { title, body } = req.body;
+        let slug = params.id;
+        const data = await Post.findById({ _id: slug });
+        res.render('admin/edit-post', { data, locals: { ...LOCALS, layout: adminLayout, title: `Spaceblogs | ${data.title}` } });
+    } catch (error) {
+        console.log({ error })
+    }
+})
 
-        try {
-            const post = await Post.create({ title, body });
-            res.status(201).json({ message: 'Post Created', post })
-        } catch (error) {
-            if (error?.code === 11000) {
-                res.status(409).json({ message: "User already in use" })
-            }
-            res.status(500).json({ message: "Internal error" })
-        }
+/**
+ * PUT /
+ * Admin - edit post
+ */
+router.put('/edit-post/:id', authMiddleware, async (req, res) => {
+    try {
+        await Post.findByIdAndUpdate(req.params.id, {
+            title: req.body.title,
+            body: req.body.body,
+            updatedAt: Date.now(),
+        })
+
+        res.redirect(`/edit-post/${req.params.id}`);
     } catch (error) {
         console.log({ error });
     }
@@ -113,11 +123,8 @@ router.post('/add-post', authMiddleware, async (req, res) => {
 
         try {
             const post = await Post.create({ title, body });
-            res.status(201).json({ message: 'Post Created', post })
+            res.redirect('dashboard')
         } catch (error) {
-            if (error?.code === 11000) {
-                res.status(409).json({ message: "User already in use" })
-            }
             res.status(500).json({ message: "Internal error" })
         }
     } catch (error) {
@@ -139,7 +146,7 @@ router.get('/admin', async (req, res) => {
  */
 router.get('/add-post', async (req, res) => {
     try {
-        res.render('admin/addPost', { locals: { ...LOCALS, title: 'Add new page' }, layout: adminLayout })
+        res.render('admin/add-post', { locals: { ...LOCALS, title: 'Add new page' }, layout: adminLayout })
     } catch (error) {
         console.log({ error })
     }
@@ -154,10 +161,11 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
         const data = await Post.find();
         res.render('admin/dashboard', {
             locals: LOCALS,
-            data
+            data,
+            layout: adminLayout
         });
-        
-    } 
+
+    }
     catch (error) {
         console.log({ error });
     }
