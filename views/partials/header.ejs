@@ -3,15 +3,19 @@
 
     <nav class="header__nav">
         <li>
-            <a href="/"" class="">Home</a>
+            <a href="/" >Home</a>
+            <%= isActiveRoute('/', currentRoute) %>
         </li>
         <li>
             <a href="/about"" class="">About</a>
+            <%= isActiveRoute('/about', currentRoute) %>
         </li>
         <li>
             <a href="/contact" class="">Contact</a>
+            <%= isActiveRoute('/contact', currentRoute) %>
         </li>
     </nav>
+    <a href="logout">Logout</a>
 
     <div class="header__button">
         <%- include('search') %>

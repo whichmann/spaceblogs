@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo').default;
 const session = require('express-session');
 
+const { isActiveRoute } = require('./server/helpers/routerHelpers')
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -30,6 +31,8 @@ app.use(session({
     }),
     // cookie: { maxAge: new Date(some date) },
 }))
+
+app.locals.isActiveRoute = isActiveRoute;
 
 // Templating engine
 app.use(expressLayout);

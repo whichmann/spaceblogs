@@ -185,4 +185,14 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
     }
 })
 
+/**
+ * GET
+ * Logout
+ */
+router.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    // res.json({ message: 'Logged out'} );
+    res.redirect('/');
+})
+
 module.exports = router; 
