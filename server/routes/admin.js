@@ -89,7 +89,7 @@ router.get('/edit-post/:id', authMiddleware, async ({ params }, res) => {
     try {
         let slug = params.id;
         const data = await Post.findById({ _id: slug });
-        res.render('admin/edit-post', { data, locals: { ...LOCALS, layout: adminLayout, title: `Spaceblogs | ${data.title}` } });
+        res.render('admin/edit-post', { data, locals: { ...LOCALS, layout: adminLayout, title: `Spaceblogs | ${data.title}`, currentRoute: '/edit-post' } });
     } catch (error) {
         console.log({ error })
     }
@@ -148,7 +148,7 @@ router.post('/add-post', authMiddleware, async (req, res) => {
 
 router.get('/admin', async (req, res) => {
     try {
-        res.render('admin/index', { locals: LOCALS, layout: adminLayout })
+        res.render('admin/index', { locals: LOCALS, layout: adminLayout, currentRoute: '/admin' })
     } catch (error) {
         console.log({ error })
     }
@@ -160,7 +160,7 @@ router.get('/admin', async (req, res) => {
  */
 router.get('/add-post', async (req, res) => {
     try {
-        res.render('admin/add-post', { locals: { ...LOCALS, title: 'Add new page' }, layout: adminLayout })
+        res.render('admin/add-post', { locals: { ...LOCALS, title: 'Add new page' }, layout: adminLayout, currentRoute: '/add-post' })
     } catch (error) {
         console.log({ error })
     }
@@ -176,7 +176,8 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
         res.render('admin/dashboard', {
             locals: LOCALS,
             data,
-            layout: adminLayout
+            layout: adminLayout,
+            currentRoute: '/dashboard'
         });
 
     }
